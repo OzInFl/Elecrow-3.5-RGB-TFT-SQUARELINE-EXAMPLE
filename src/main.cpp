@@ -3,26 +3,22 @@
 #define LGFX_USE_V1
 #include <LovyanGFX.hpp>
 #include "FT6236.h"
-#include <Ticker.h>          //Call the ticker. H Library
-Ticker ticker1;
-Ticker ticker2;
-
 #include <Wire.h>
+#include <Ticker.h> 
+Ticker ticker1;
 
-#include <examples/lv_examples.h>
-#include <demos/lv_demos.h>
+#define BUZZER_PIN 20
+
 const int i2c_touch_addr = TOUCH_I2C_ADD;
-
 
 //The Squareline Interface Code
 #include "ui.h"
 #include "ui_helpers.h"
 
+//Pins for the LCD Backloght and TouchScreen
 #define LCD_BL 46
-
 #define SDA_FT6236 38
 #define SCL_FT6236 39
-
 
 
 class LGFX : public lgfx::LGFX_Device
@@ -113,6 +109,7 @@ class LGFX : public lgfx::LGFX_Device
 };
 
 LGFX tft;
+
 /*Change to your screen resolution*/
 static const uint16_t screenWidth  = 320;
 static const uint16_t screenHeight = 480;
@@ -146,11 +143,6 @@ void my_touchpad_read(lv_indev_drv_t * indev_driver, lv_indev_data_t * data) {
     }
     else {
       data->state = touched ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL; 
-  
-      /*Save the state and save the pressed coordinate*/
-      //if(data->state == LV_INDEV_STATE_PR) touchpad_get_xy(&last_x, &last_y);
-     
-      /*Set the coordinates (if released use the last pressed coordinates)*/
       data->point.x = touchX;
       data->point.y = touchY;
     }
@@ -186,24 +178,20 @@ void setup()
 {
   Serial.begin( 9600 ); /* prepare for possible serial debug */
   //Buzzer
-  pinMode(20, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
   ledcSetup(4, 5000, 8);
-  ledcAttachPin(20, 4);
+  ledcAttachPin(BUZZER_PIN, 4);
+  
 
   tft.begin();          /* TFT init */
   tft.setRotation( 2 ); /* Landscape orientation, flipped */
-  //tft.fillScreen(TFT_BLACK);
+  
   delay(500);
   pinMode(LCD_BL, OUTPUT);
   digitalWrite(LCD_BL, HIGH);
 
-  digitalWrite(20, HIGH);
-  delay(500);
-  digitalWrite(20, LOW);
-
   touch_init();
   
-
   lv_init();
   lv_disp_draw_buf_init( &draw_buf, buf, NULL, screenWidth * screenHeight / 8 );
 
@@ -229,6 +217,10 @@ void setup()
   
   lv_timer_handler();
   
+
+  
+  
+
 }
 
 void loop()
