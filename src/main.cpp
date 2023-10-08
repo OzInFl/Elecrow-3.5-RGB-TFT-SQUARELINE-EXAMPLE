@@ -172,15 +172,39 @@ void touch_init()
   }
 }
 
+void lvgl_loop(void *parameter)
+{
 
+  while (true)
+  {
+    lv_timer_handler();
+    delay(5);
+  }
+  vTaskDelete(NULL);
+}
+
+void guiHandler()
+{
+
+  xTaskCreatePinnedToCore(
+      // xTaskCreate(
+      lvgl_loop,   // Function that should be called
+      "LVGL Loop", // Name of the task (for debugging)
+      20480,       // Stack size (bytes)
+      NULL,        // Parameter to pass
+      1,           // Task priority
+      // NULL
+      NULL, // Task handle
+      1);
+}
 
 void setup()
 {
-  Serial.begin( 9600 ); /* prepare for possible serial debug */
+  Serial.begin(115200); /* prepare for possible serial debug */
   //Buzzer
-  pinMode(BUZZER_PIN, OUTPUT);
-  ledcSetup(4, 5000, 8);
-  ledcAttachPin(BUZZER_PIN, 4);
+  //pinMode(BUZZER_PIN, OUTPUT);
+  //ledcSetup(4, 5000, 8);
+  //ledcAttachPin(BUZZER_PIN, 4);
   
 
   tft.begin();          /* TFT init */
@@ -214,13 +238,8 @@ void setup()
 
 
   ui_init();
+  guiHandler();
   
-  lv_timer_handler();
-  
-
-  
-  
-
 }
 
 void loop()
@@ -228,7 +247,9 @@ void loop()
   
   //***************************************************lvgl刷新********************
   lv_timer_handler(); /* let the GUI do its work */
-  ledcWrite(4, 0);//关闭蜂鸣器
-  delay(5);
+  //ledcWrite(4, 0);//关闭蜂鸣器
+  delay(1000);
+  //Serial.println(lv_slider_get_value(ui_sldMainSlider));
+  lv_slider_set_value(ui_sldMainSlider,50,LV_ANIM_ON);
 }
 
