@@ -250,6 +250,6 @@ void loop()
   //ledcWrite(4, 0);//关闭蜂鸣器
   delay(1000);
   //Serial.println(lv_slider_get_value(ui_sldMainSlider));
-  lv_slider_set_value(ui_sldMainSlider,50,LV_ANIM_ON);
+  //lv_slider_set_value(ui_sldMainSlider,50,LV_ANIM_ON);
 }
 
