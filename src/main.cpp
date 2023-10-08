@@ -15,10 +15,12 @@ const int i2c_touch_addr = TOUCH_I2C_ADD;
 #include "ui.h"
 #include "ui_helpers.h"
 
-//Pins for the LCD Backloght and TouchScreen
+//Pins for the LCD Backlight and TouchScreen
 #define LCD_BL 46
 #define SDA_FT6236 38
 #define SCL_FT6236 39
+
+int sldval;
 
 
 class LGFX : public lgfx::LGFX_Device
@@ -249,7 +251,8 @@ void loop()
   lv_timer_handler(); /* let the GUI do its work */
   //ledcWrite(4, 0);//关闭蜂鸣器
   delay(1000);
-  //Serial.println(lv_slider_get_value(ui_sldMainSlider));
-  //lv_slider_set_value(ui_sldMainSlider,50,LV_ANIM_ON);
+  sldval=lv_slider_get_value(ui_Slider1);
+  Serial.println(sldval);
+  
 }
 
